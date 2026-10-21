@@ -132,6 +132,11 @@
          "show_stats": true. Nothing is read, and the clock does not move, while this is false. -->
     <bool name="show_stats">false</bool>
 
+    <!-- Cinematic top shelf, tvOS style: the focused dock app's artwork, softened, fills the top of the screen
+         behind a larger name. Off on festival days, which show the festival's own picture. A theme can set
+         "cinematic_home": true. -->
+    <bool name="cinematic_home">false</bool>
+
     <!-- Time-of-day backdrop behind everything: a dark gradient that follows the clock, with a warm
          horizon glow around sunrise and sunset. 0 keeps the plain background (the default); 1 to 100
          sets its opacity. Around 60 reads clearly without hiding a wallpaper. Can also be set with

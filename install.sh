@@ -118,7 +118,7 @@ tvsh settings put secure screensaver_components "$PKG/.PhotoDream"
 tvsh settings put secure screensaver_enabled 1
 echo "screensaver: Family Photos (add photos with ./add_photos.sh)"
 # Keep at most 4 apps cached in the background: a 1 GB TV stops thrashing.
-tvsh device_config put activity_manager max_cached_processes 4
+tvsh device_config put activity_manager max_cached_processes 4 || echo "(device_config not on Android 9, skipped)"
 echo "background-app limit: 4"
 
 printf '\nDone. Press Home on the remote. Undo everything: ./restore.sh\n'

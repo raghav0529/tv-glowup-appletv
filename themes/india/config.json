@@ -2,15 +2,14 @@
   "background_color": "#070A14",
   "wallpaper": true,
   "sky_intensity": 0,
-  "columns": 4,
+  "columns": 5,
   "dock_apps": [
+    "com.netflix.ninja",
     "in.startv.hotstar",
     "com.google.android.youtube.tv",
-    "com.netflix.ninja",
     "com.amazon.amazonvideo.livingroom",
-    "com.sonyliv",
-    "com.viacom18.tv.voot",
-    "com.htlabs.ottplay",
+    "com.mitv.tvhome.mitvplus",
+    "com.graymatrix.did",
     "tv.airtel.xstream.tvapp"
   ],
   "hidden_apps": [
@@ -22,9 +21,11 @@
     "me.efesser.flauncher",
     "com.mediatek.wwtv.mediaplayer",
     "com.oneplus.tv.remote",
-    "com.mediatek.wwtv.tvcenter"
+    "com.mediatek.wwtv.tvcenter",
+    "com.droidlogic.droidlivetv",
+    "com.mitv.tvhome.atv"
   ],
-  "live_tv_package": "com.mediatek.wwtv.tvcenter",
+  "live_tv_package": "com.droidlogic.droidlivetv",
   "greeting_name": "",
   "festival": "auto",
   "reduced_motion": true,
@@ -32,5 +33,9 @@
   "app_library": true,
   "weather_lat": "",
   "weather_lon": "",
-  "weather_effects": true
+  "weather_effects": true,
+  "app_keys": [
+    "189:cv.sarthakgoel.tvhome"
+  ],
+  "cinematic_home": true
 }

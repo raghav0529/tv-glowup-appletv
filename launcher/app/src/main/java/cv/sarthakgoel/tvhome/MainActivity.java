@@ -14,6 +14,7 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Rect;
@@ -43,6 +44,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -73,9 +75,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -106,6 +110,15 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private GlassView glass;
     private View ambient;
     private TextView heroName;
+    /** Cinematic top shelf (config.xml, cinematic_home), off on festival days: the focused dock app's artwork
+     *  behind a larger name, tvOS style. */
+    private boolean cinematic;
+    private ImageView heroArt;
+    private static final float HERO_ART_ALPHA = 0.5f;
+    /** Softened artwork per app (HeroArt, about 5 KB each), made the first time its dock tile is focused. */
+    private final Map<String, Bitmap> heroArtCache = new HashMap<>();
+    /** The app whose artwork heroArt shows, so focusing it again only fades it back in. */
+    private String heroArtKey;
     private int ambientColor = -1;
     private ValueAnimator ambientAnimator;
     private boolean heroShown;
@@ -318,6 +331,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // a fade renders it into a full-screen offscreen buffer first.
         ambient.forceHasOverlappingRendering(false);
         heroName = findViewById(R.id.heroName);
+        heroArt = findViewById(R.id.heroArt);
+        // Festival days show the festival's own picture, so the shelf steps aside for them.
+        cinematic = cfg.cinematicHome && !festive;
+        if (cinematic) setUpCinematicShelf();
         // dock_title false: the name above the dock never shows; the glow still follows the dock.
         if (!cfg.dockTitle) heroName.setVisibility(View.GONE);
         greeting = findViewById(R.id.greeting);
@@ -361,6 +378,20 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                                                          @NonNull Rect rect, boolean immediate,
                                                          boolean focusedChildVisible) {
                 if (dockRow && getPosition(child) < COLUMNS) return false;
+                // tvOS paging: Down from the dock into the first grid row slides the page up in one move, so the
+                // dock sits whole at the top of the grid with the apps under it, instead of one row at a time
+                // (which left the dock half under the clock bar). Up to the dock parks it back on the padding line.
+                if (dockRow && getPosition(child) < 2 * COLUMNS) {
+                    View dock = findViewByPosition(0);
+                    if (dock != null) {
+                        int dy = getDecoratedTop(dock) - (int) (8 * density);
+                        if (dy > 0) {
+                            if (immediate || reducedMotion || !animations) parent.scrollBy(0, dy);
+                            else parent.smoothScrollBy(0, dy);
+                            return true;
+                        }
+                    }
+                }
                 int top = child.getTop() + rect.top;
                 int bottom = top + rect.height();
                 // A row already fully on screen stays put, even inside the bottom padding (the last row
@@ -651,7 +682,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             heroShown = false;
             heroName.setAlpha(0f);
             ambient.setAlpha(0f);
+            heroArt.animate().cancel();
+            heroArt.setAlpha(0f);
         }
+        // An updated app may bring new artwork; the backdrop is cheap to make again.
+        heroArtCache.clear();
+        heroArtKey = null;
         reloadTiles();
         if (animate && animations && !reducedMotion) grid.scheduleLayoutAnimation();
 
@@ -714,6 +750,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         stopAmbientAnimation();
         heroName.animate().cancel();
         ambient.animate().cancel();
+        heroArt.animate().cancel();
         handler.removeCallbacks(minuteTick);
         stopStats();
         if (diya != null) diya.stop();
@@ -1128,6 +1165,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         int color = adapter.ambientColorAt(position);
         float y = dockTopInRoot - 14 * density - 26 * density - heroName.getHeight();
         boolean changed = !label.contentEquals(heroName.getText());
+        if (cinematic) showHeroArt(position);
 
         if (!animations || reducedMotion) {
             // Snap the shelf instead of sliding and fading it: each of those frames repaints the
@@ -1245,6 +1283,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         heroName.animate().cancel();
         ambient.animate().cancel();
         heroName.setAlpha(0f);
+        heroArt.animate().cancel();
+        heroArt.setAlpha(0f);
         heroShown = false;
         if (!animations || reducedMotion) {
             setAmbient(color);
@@ -1267,14 +1307,84 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         stopAmbientAnimation();
         heroName.animate().cancel();
         ambient.animate().cancel();
+        heroArt.animate().cancel();
         heroShown = false;
         if (animations) {
             heroName.animate().alpha(0f).setDuration(reducedMotion ? 100 : 160).start();
             ambient.animate().alpha(0f).setDuration(reducedMotion ? 140 : 300).start();
+            heroArt.animate().alpha(0f).setDuration(reducedMotion ? 140 : 300).start();
         } else {
             heroName.setAlpha(0f);
             ambient.setAlpha(0f);
+            heroArt.setAlpha(0f);
         }
+    }
+
+    // ---- cinematic shelf (ported from Gathin23/cleanyourtv, cinematic_home) -------------------------
+
+    /** The parts that never change: a larger name, the artwork and the scrim. */
+    private void setUpCinematicShelf() {
+        heroName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 68f);
+        heroName.setLetterSpacing(-0.025f);
+        heroArt.setVisibility(View.VISIBLE);
+        // One stretched bitmap: apply its alpha while drawing instead of through an offscreen buffer.
+        heroArt.forceHasOverlappingRendering(false);
+        View scrim = findViewById(R.id.heroScrim);
+        scrim.setBackground(scrimDrawable());
+        scrim.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Darkens the side the shelf's text is on and the lower part of the screen, so the name, the dock and
+     * the grid stay readable over the artwork. One small bitmap stretched over the screen, like the glow.
+     */
+    private Drawable scrimDrawable() {
+        int w = 480, h = 270;
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmp);
+        Paint paint = new Paint();
+        paint.setShader(new LinearGradient(0, 0, w, 0,
+                new int[]{0xD1060406, 0x59060406, 0x00060406}, new float[]{0f, 0.42f, 0.7f}, Shader.TileMode.CLAMP));
+        canvas.drawRect(0, 0, w, h, paint);
+        paint.setShader(new LinearGradient(0, 0, 0, h,
+                new int[]{0x00060406, 0x00060406, 0xDB060406, 0xFF060406}, new float[]{0f, 0.28f, 0.58f, 0.76f},
+                Shader.TileMode.CLAMP));
+        canvas.drawRect(0, 0, w, h, paint);
+        BitmapDrawable scrim = new BitmapDrawable(getResources(), bmp);
+        scrim.setGravity(Gravity.FILL);
+        return scrim;
+    }
+
+    /** Swaps the backdrop to this app's artwork: fade out, swap, fade in, the way the shelf's name changes. */
+    private void showHeroArt(int position) {
+        String key = adapter.keyAt(position);
+        if (key == null) return;
+        heroArt.animate().cancel();
+        if (key.equals(heroArtKey)) {
+            fadeHeroArt(420);
+            return;
+        }
+        Bitmap art = heroArtCache.get(key);
+        if (art == null) {
+            art = HeroArt.from(adapter.artworkAt(position));
+            if (art != null) heroArtCache.put(key, art);
+        }
+        heroArtKey = key;
+        final Bitmap next = art;
+        if (!animations || reducedMotion || heroArt.getAlpha() == 0f) {
+            heroArt.setImageBitmap(next);
+            fadeHeroArt(600);
+            return;
+        }
+        heroArt.animate().alpha(0f).setDuration(140).withEndAction(() -> {
+            heroArt.setImageBitmap(next);
+            heroArt.animate().alpha(HERO_ART_ALPHA).setDuration(420).start();
+        }).start();
+    }
+
+    private void fadeHeroArt(int ms) {
+        if (!animations) heroArt.setAlpha(HERO_ART_ALPHA);
+        else heroArt.animate().alpha(HERO_ART_ALPHA).setDuration(reducedMotion ? Math.min(ms, 160) : ms).start();
     }
 
     private void hideGlass() {

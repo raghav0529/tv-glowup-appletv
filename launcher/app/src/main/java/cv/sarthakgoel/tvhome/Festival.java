@@ -55,7 +55,8 @@ final class Festival {
     static Festival forDate(LocalDate day) {
         FestivalCalendar.Entry e = FestivalCalendar.on(day);
         if (e == null) return NONE;
-        return new Festival(e.id, e.end, e.greeting, e.accent, e.wallpaper, e.diya, e.effect);
+        // Calendar days show the greeting and the festival's picture only: no diya, no Home-press animation.
+        return new Festival(e.id, e.end, e.greeting, e.accent, e.wallpaper, false, EFFECT_NONE);
     }
 
     /**
@@ -66,6 +67,18 @@ final class Festival {
         String n = name == null ? "" : name.trim().toLowerCase(Locale.ROOT);
         if (n.isEmpty() || n.length() > 40) return NONE;
         if (n.equals("auto")) return forDate(LocalDate.now());
+        // "preview:YYYY-MM-DD": that date's calendar occasion, shown today and until the theme changes, to check
+        // how a festival will look without changing the TV's clock.
+        if (n.startsWith("preview:")) {
+            FestivalCalendar.Entry e;
+            try {
+                e = FestivalCalendar.on(LocalDate.parse(n.substring("preview:".length())));
+            } catch (DateTimeParseException ex) {
+                return NONE;
+            }
+            if (e == null) return NONE;
+            return new Festival(e.id, null, e.greeting, e.accent, e.wallpaper, false, EFFECT_NONE);
+        }
         LocalDate end = null;
         if (until != null && !until.trim().isEmpty()) {
             try {

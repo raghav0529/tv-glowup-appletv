@@ -531,6 +531,13 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     /** A vivid colour sampled from the app's banner (or icon), cached per entry; a card's accent when it set one. */
+    /** The tile's artwork (banner, else icon) for the cinematic shelf's backdrop; null past the end. */
+    Drawable artworkAt(int position) {
+        if (position < 0 || position >= items.size()) return null;
+        Entry e = items.get(position);
+        return e.banner != null ? e.banner : e.icon;
+    }
+
     int ambientColorAt(int position) {
         if (position < 0 || position >= items.size()) return 0xFF444444;
         Entry e = items.get(position);

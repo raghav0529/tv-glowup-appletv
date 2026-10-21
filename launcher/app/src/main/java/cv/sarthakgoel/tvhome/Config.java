@@ -96,6 +96,8 @@ final class Config {
     final String weatherLat, weatherLon;
     /** Weather animations on a Home press on ordinary days (config.json weather_effects, default true). */
     final boolean weatherEffects;
+    /** Cinematic top shelf (config.xml, cinematic_home): the focused dock app's artwork behind a larger shelf. */
+    final boolean cinematicHome;
 
     private Config(List<String> dockApps, boolean fillDock, List<String> hiddenApps, String liveTvPackage,
                    String liveTvAction, String sourcePanelService, String sourcePanelAction, String inputAction,
@@ -105,7 +107,8 @@ final class Config {
                    int[] settingsKeycodes, boolean settingsKeyPanel, boolean wallpaperEnabled, File wallpaper, List<File> wallpapers,
                    int wallpaperRotationMinutes, int wallpaperDim, boolean overlayApplied,
                    Festival festival, int[] inputKeycodes, List<String> appKeys, boolean festivalWallpaper,
-                   String weatherLat, String weatherLon, boolean weatherEffects) {
+                   String weatherLat, String weatherLon, boolean weatherEffects, boolean cinematicHome) {
+        this.cinematicHome = cinematicHome;
         this.festivalWallpaper = festivalWallpaper;
         this.weatherLat = weatherLat;
         this.weatherLon = weatherLon;
@@ -184,6 +187,7 @@ final class Config {
         boolean settingsKeyPanel = res.getBoolean(R.bool.settings_key_panel);
         int[] inputKeycodes = res.getIntArray(R.array.input_key_keycodes);
         List<String> appKeys = new ArrayList<>(Arrays.asList(res.getStringArray(R.array.app_keys)));
+        boolean cinematic = res.getBoolean(R.bool.cinematic_home);
         boolean applied = false;
 
         File dir = dir(ctx);
@@ -220,6 +224,7 @@ final class Config {
             settingsKeyPanel = bool(json, "settings_key_panel", settingsKeyPanel);
             inputKeycodes = intArray(json, "input_key_keycodes", inputKeycodes);
             appKeys = stringList(json, "app_keys", appKeys);
+            cinematic = bool(json, "cinematic_home", cinematic);
         }
         // A theme push or reset invalidates choices made on the TV. On first use, remember the
         // current theme without clearing choices from an older launcher version.
@@ -266,7 +271,7 @@ final class Config {
                 shamsi, greetingName, moduleCards, reducedMotion, dockTitle, dockRow, reorderButton, vpn, homeSettings, showStats, library, background,
                 Math.max(0, Math.min(100, skyIntensity)), settingsKeycodes, settingsKeyPanel, wallpaperEnabled, wallpaper,
                 wallpapers, rotationMinutes, wallpaperDim, applied,
-                festival, inputKeycodes, appKeys, festivalWallpaper, weatherLat, weatherLon, weatherEffects);
+                festival, inputKeycodes, appKeys, festivalWallpaper, weatherLat, weatherLon, weatherEffects, cinematic);
     }
 
     /** A decimal degree within +-{@code limit}, normalised for a URL; "" when malformed or empty. */

@@ -1,3 +1,64 @@
+# TV Glowup, Apple TV edition (tv-glowup-appletv)
+
+A fork of [sarthakgoel31/tv-glowup](https://github.com/sarthakgoel31/tv-glowup) that gives the home screen an Apple TV style layout and adds tested support for the **Xiaomi Mi TV MiTV-AXSO0** (Mi TV 4A Pro / 4C Pro, Android TV 9). Everything else, including debloat with full restore, the festival calendar, live weather, and the one-command undo, comes from tv-glowup and works as its README below describes.
+
+![Home: dock at the bottom, the focused app's artwork across the top](docs/appletv/home.png)
+
+## What this fork changes
+
+**Apple TV style home**
+- **Cinematic top shelf.** The focused app's artwork, softened, fills the top of the screen behind a large app name. Ported from [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv) (`cinematic_home`). It uses a 48×27 pixel bitmap stretched over the screen instead of a real blur, so it costs almost nothing on a 1 GB TV.
+- **Dock at the bottom.** The first screen shows only the dock, with the shelf above it.
+- **One press of Down pages the grid up.** The dock slides to the top in one move and the rest of your apps appear under it. Up brings it back. Before this change the page moved one row at a time and the dock ended up half hidden under the clock.
+- **5 apps per row**, as on tvOS.
+
+**Festivals**
+- **Each festival shows only on its actual day.** Upstream ran several festivals a day either side, so "Happy Dussehra" was still showing the day after Dussehra. Christmas is now the 25th only.
+- **Festival days show the greeting and the festival artwork only**, with no diya and no petal shower. The top shelf steps aside on those days so the artwork shows in full.
+- **Preview any festival without changing the TV's clock:** set `"festival": "preview:2026-11-08"` in the theme config. See [docs/FESTIVALS.md](docs/FESTIVALS.md).
+
+**Xiaomi Mi TV (MiTV-AXSO0) support**
+- A debloat list built from this TV's own package list: [devices/xiaomi-mitv-axso0-android9/disable.txt](devices/xiaomi-mitv-axso0-android9/disable.txt).
+- **The Mi button opens the new home screen.** It sends keycode 189 to Xiaomi's own handler, which opened PatchWall. Fixed with `app_keys`.
+- **Boots to the new home** instead of PatchWall.
+- **Windows (Git Bash) fixes** for the scripts.
+
+Full steps, including the parts of Mi TV setup that tripped me up: [docs/MI-TV.md](docs/MI-TV.md).
+
+| Diwali | Dussehra | Rakhi |
+|---|---|---|
+| ![](docs/appletv/festival-diwali.png) | ![](docs/appletv/festival-dussehra.png) | ![](docs/appletv/festival-rakhi.png) |
+
+| After pressing Down | Rainy day | Rain animation on Home press |
+|---|---|---|
+| ![](docs/appletv/home-after-down.png) | ![](docs/appletv/weather-rain-day.png) | ![](docs/appletv/weather-rain-animation.png) |
+
+## Speed
+
+Measured with `./measure.sh` on the MiTV-AXSO0 (1 GB RAM), about 2 minutes after a reboot, one run each.
+
+| | Stock | After debloat | After Apple TV layout |
+|---|---|---|---|
+| Home screen RAM | 61 MB | 34 MB | 30 MB |
+| YouTube opens in | 2.2 s | 2.3 s | 2.1 s |
+| Netflix | 2.4 s | 2.3 s | 2.2 s |
+| JioHotstar | 5.1 s | 3.4 s | 3.3 s |
+| Prime Video | 2.5 s | 3.4 s | 4.0 s |
+
+The gains on this TV are smaller than upstream's OnePlus numbers. This Mi TV already had about 265 MB free before the debloat, which is where the OnePlus ended up after it, so memory was never what slowed it down. The layout changes cost nothing measurable. These are single runs, and differences of a few tenths of a second are run-to-run variation. Prime Video swings between 2.5 and 4 s on its own.
+
+## Credits
+
+- **[Sarthak Goel](https://github.com/sarthakgoel31), [tv-glowup](https://github.com/sarthakgoel31/tv-glowup):** nearly everything here. That includes the debloat and restore scripts, the launcher, the festival calendar, live weather, the photo screensaver and the remote-key services. This fork changes a few hundred lines of a launcher that is about ten thousand.
+- **[Gathin](https://github.com/Gathin23), [cleanyourtv](https://github.com/Gathin23/cleanyourtv):** the launcher tv-glowup is built on, and the cinematic top shelf code ported here. Its MiTV-AXSO0 notes were also a reference for the debloat list.
+- **Raghav Goel ([raghav0529](https://github.com/raghav0529)):** the Apple TV layout direction and design decisions, Mi TV AXSO0 support, the festival-date fix and preview switch, and testing everything on a real TV. Built with AI coding tools (Claude Code).
+
+MIT licensed, like both projects it builds on. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+---
+
+*The original tv-glowup README follows. Every command in it works the same in this fork.*
+
 # TV Glowup
 
 **Make a slow, cheap Android TV fast and beautiful in 10 minutes, over Wi-Fi. No root, nothing uninstalled, one command to undo.**

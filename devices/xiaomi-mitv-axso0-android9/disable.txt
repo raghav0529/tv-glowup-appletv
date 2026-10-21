@@ -1,0 +1,40 @@
+# TV Glowup debloat list: Xiaomi MiTV-AXSO0, Android 9 (Amlogic "txlx"), 1 GB RAM.
+# Built from this TV's own package list, cross-checked against AlPeFe/xiaomi-tv-debloat
+# and the MiTV-AXSO0 list in Gathin23/cleanyourtv PR #25.
+#
+# install.sh runs `pm disable-user --user 0 <package>` for every line below.
+# Nothing is uninstalled. Undo one: adb -s $TV shell pm enable <package>, or ./restore.sh for all.
+#
+# Deliberately KEPT: Xiaomi TV+ (com.mitv.tvhome.mitvplus), ZEE5, JioHotstar, Netflix, YouTube,
+# Prime Video, Airtel Xstream, Play Store + Play Services, PatchWall (com.mitv.tvhome.atv, in case
+# Xiaomi TV+ leans on it), all com.droidlogic.* / mitv.service / com.android.tv (HDMI, tuner, inputs),
+# com.android.location.fused (boot-loop trap), Chromecast (mediashell), Miracast/MiLink/smartshare,
+# Assistant (katniss), Google TV phone remote, firmware updates, USB media player and gallery,
+# parental lock, and anything not clearly identified.
+
+# --- Telemetry and bug reporters ---
+com.miui.tv.analytics                   # Xiaomi usage analytics
+com.xiaomi.statistic                    # Xiaomi statistics collection
+com.google.android.feedback             # Google feedback reporter
+com.google.android.tv.bugreportsender   # Google bug report sender
+
+# --- Google extras that run in the background on a 1 GB TV ---
+com.google.android.play.games           # Google Play Games
+com.google.android.videos               # Google Play Movies
+com.google.android.youtube.tvmusic      # YouTube Music
+com.google.android.backdrop             # Backdrop screensaver (replaced by Family Photos screensaver)
+com.google.android.leanbacklauncher     # old Leanback launcher (not the current Home)
+com.google.android.leanbacklauncher.recommendations   # its recommendation feed
+com.google.android.marvin.talkback      # TalkBack screen reader
+
+# --- Xiaomi preloads and promos ---
+android.autoinstalls.config.xioami.dangal   # Play auto-installs (pushes promoted apps)
+com.xiaomi.mitv.tvmanager               # TV Manager "cleaner"
+com.xiaomi.mitv.handbook                # on-screen manual
+com.xiaomi.mimusic2                     # Mi Music
+com.xm.webcontent                       # Xiaomi web content / promo rows
+com.xiaomo.tv.milegal                   # legal-notice checker
+
+# --- Hardware the TV does not have ---
+com.android.camera2                     # camera app (no camera)
+com.android.printspooler                # print service

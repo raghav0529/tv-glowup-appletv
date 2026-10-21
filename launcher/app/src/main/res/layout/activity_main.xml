@@ -12,12 +12,32 @@
         android:layout_height="match_parent"
         android:importantForAccessibility="no" />
 
+    <!-- Cinematic top shelf (cinematic_home): the focused dock app's artwork, a few pixels across and
+         stretched over the screen, which softens it like a blur without the cost of one. Hidden otherwise. -->
+    <ImageView
+        android:id="@+id/heroArt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:alpha="0"
+        android:visibility="gone"
+        android:importantForAccessibility="no" />
+
     <!-- Ambient glow in the colour of the focused dock app. -->
     <View
         android:id="@+id/ambient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0" />
+
+    <!-- Cinematic top shelf: darkens the edge behind the shelf and the lower half, so the text and the
+         dock stay readable over the artwork. -->
+    <View
+        android:id="@+id/heroScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:importantForAccessibility="no" />
 
     <!-- Top shelf: the focused dock app's name, positioned above the dock in code. -->
     <TextView

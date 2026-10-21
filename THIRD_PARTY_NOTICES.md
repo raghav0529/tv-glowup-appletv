@@ -4,6 +4,8 @@
 
 The launcher in `launcher/` is a modified copy of software released under the following license:
 
+This includes `HeroArt.java` and the cinematic top shelf code in `MainActivity.java`, ported in the tv-glowup-appletv fork from a later version of the same project ([Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv)).
+
 ```
 MIT License
 

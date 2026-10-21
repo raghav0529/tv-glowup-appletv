@@ -39,31 +39,30 @@ final class FestivalCalendar {
             TRICOLOUR = Festival.EFFECT_TRICOLOUR, NONE = Festival.EFFECT_NONE;
 
     private static final Entry[] ENTRIES = {
-            new Entry("dussehra", "2026-10-19", "2026-10-21", "Happy Dussehra", RED, "dussehra", true, PETALS),
+            new Entry("dussehra", "2026-10-20", "2026-10-20", "Happy Dussehra", RED, "dussehra", true, PETALS),
             new Entry("karwachauth", "2026-10-29", "2026-10-29", "Happy Karwa Chauth", GOLD, "", true, NONE),
             new Entry("diwali", "2026-11-06", "2026-11-06", "Happy Dhanteras", GOLD, "diwali", true, PETALS),
             new Entry("diwali", "2026-11-07", "2026-11-07", "Happy Choti Diwali", GOLD, "diwali", true, PETALS),
-            new Entry("diwali", "2026-11-08", "2026-11-09", "Happy Diwali", GOLD, "diwali", true, PETALS),
+            new Entry("diwali", "2026-11-08", "2026-11-08", "Happy Diwali", GOLD, "diwali", true, PETALS),
             new Entry("diwali", "2026-11-10", "2026-11-10", "Happy Govardhan Puja", GOLD, "diwali", true, PETALS),
             new Entry("diwali", "2026-11-11", "2026-11-11", "Happy Bhai Dooj", GOLD, "diwali", true, PETALS),
             new Entry("chhath", "2026-11-15", "2026-11-15", "Happy Chhath Puja", SAFFRON, "dussehra", true, NONE),
             new Entry("gurpurab", "2026-11-24", "2026-11-24", "Happy Gurpurab", SAFFRON, "diwali", true, NONE),
-            new Entry("christmas", "2026-12-20", "2026-12-23", "Happy Holidays", RED, "christmas", false, SNOW),
-            new Entry("christmas", "2026-12-24", "2026-12-26", "Merry Christmas", RED, "christmas", false, SNOW),
+            new Entry("christmas", "2026-12-25", "2026-12-25", "Merry Christmas", RED, "christmas", false, SNOW),
             new Entry("newyear", "2026-12-31", "2026-12-31", "Happy New Year's Eve", CHAMPAGNE, "newyear", false, SPARKLES),
-            new Entry("newyear", "2027-01-01", "2027-01-02", "Happy New Year", CHAMPAGNE, "newyear", false, SPARKLES),
-            new Entry("lohri", "2027-01-13", "2027-01-14", "Happy Lohri", SAFFRON, "lohri", false, EMBERS),
+            new Entry("newyear", "2027-01-01", "2027-01-01", "Happy New Year", CHAMPAGNE, "newyear", false, SPARKLES),
+            new Entry("lohri", "2027-01-13", "2027-01-13", "Happy Lohri", SAFFRON, "lohri", false, EMBERS),
             new Entry("sankranti", "2027-01-15", "2027-01-15", "Happy Makar Sankranti", SAFFRON, "lohri", false, EMBERS),
             new Entry("republic", "2027-01-26", "2027-01-26", "Happy Republic Day", SAFFRON, "tricolour", false, TRICOLOUR),
             new Entry("shivratri", "2027-03-06", "2027-03-06", "Happy Maha Shivratri", BLUE, "janmashtami", true, NONE),
             new Entry("holi", "2027-03-21", "2027-03-21", "Happy Holika Dahan", SAFFRON, "lohri", false, EMBERS),
-            new Entry("holi", "2027-03-22", "2027-03-23", "Happy Holi", PINK, "holi", false, COLORS),
+            new Entry("holi", "2027-03-22", "2027-03-22", "Happy Holi", PINK, "holi", false, COLORS),
             new Entry("baisakhi", "2027-04-14", "2027-04-14", "Happy Baisakhi", GOLD, "lohri", false, EMBERS),
             new Entry("ramnavami", "2027-04-15", "2027-04-15", "Happy Ram Navami", SAFFRON, "ganesh", true, PETALS),
             new Entry("independence", "2027-08-15", "2027-08-15", "Happy Independence Day", SAFFRON, "tricolour", false, TRICOLOUR),
             new Entry("rakhi", "2027-08-17", "2027-08-17", "Happy Raksha Bandhan", PLUM, "rakhi", false, NONE),
             new Entry("janmashtami", "2027-08-25", "2027-08-25", "Happy Janmashtami", BLUE, "janmashtami", false, NONE),
-            new Entry("ganesh", "2027-09-04", "2027-09-05", "Ganpati Bappa Morya", SAFFRON, "ganesh", true, PETALS),
+            new Entry("ganesh", "2027-09-04", "2027-09-04", "Ganpati Bappa Morya", SAFFRON, "ganesh", true, PETALS),
             new Entry("navratri", "2027-09-30", "2027-10-08", "Happy Navratri", RED, "dussehra", true, NONE),
             new Entry("dussehra", "2027-10-09", "2027-10-09", "Happy Dussehra", RED, "dussehra", true, PETALS),
             new Entry("karwachauth", "2027-10-18", "2027-10-18", "Happy Karwa Chauth", GOLD, "", true, NONE),
@@ -74,10 +73,9 @@ final class FestivalCalendar {
             new Entry("diwali", "2027-10-31", "2027-10-31", "Happy Bhai Dooj", GOLD, "diwali", true, PETALS),
             new Entry("chhath", "2027-11-04", "2027-11-04", "Happy Chhath Puja", SAFFRON, "dussehra", true, NONE),
             new Entry("gurpurab", "2027-11-14", "2027-11-14", "Happy Gurpurab", SAFFRON, "diwali", true, NONE),
-            new Entry("christmas", "2027-12-20", "2027-12-23", "Happy Holidays", RED, "christmas", false, SNOW),
-            new Entry("christmas", "2027-12-24", "2027-12-26", "Merry Christmas", RED, "christmas", false, SNOW),
+            new Entry("christmas", "2027-12-25", "2027-12-25", "Merry Christmas", RED, "christmas", false, SNOW),
             new Entry("newyear", "2027-12-31", "2027-12-31", "Happy New Year's Eve", CHAMPAGNE, "newyear", false, SPARKLES),
-            new Entry("newyear", "2028-01-01", "2028-01-02", "Happy New Year", CHAMPAGNE, "newyear", false, SPARKLES)
+            new Entry("newyear", "2028-01-01", "2028-01-01", "Happy New Year", CHAMPAGNE, "newyear", false, SPARKLES)
     };
 
     private FestivalCalendar() {}
