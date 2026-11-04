@@ -241,7 +241,8 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (ResolveInfo ri : found) {
             if (ri.activityInfo == null) continue;
             String pkg = ri.activityInfo.packageName;
-            boolean ownPhotos = pkg.equals(ctx.getPackageName()) && ri.activityInfo.name.endsWith(".PhotosActivity");
+            boolean ownPhotos = pkg.equals(ctx.getPackageName()) && (ri.activityInfo.name.endsWith(".PhotosActivity")
+                    || ri.activityInfo.name.endsWith(".DeckActivity"));
             if ((pkg.equals(ctx.getPackageName()) && !ownPhotos) || !ri.activityInfo.exported
                     || !LibraryApps.visible(tvPackages.contains(pkg), hidden.contains(pkg), added.contains(pkg), removed.contains(pkg))) continue;
             ComponentName component = new ComponentName(pkg, ri.activityInfo.name);

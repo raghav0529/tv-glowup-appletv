@@ -137,6 +137,23 @@
          "cinematic_home": true. -->
     <bool name="cinematic_home">false</bool>
 
+    <!-- Whether HomeKeyService and InputKeyService request key filtering (from cleanyourtv's key_filter). Many TVs
+         drop a held button's auto-repeat once any service filters keys, so holding volume moves one step. False:
+         the services stay bound but stop filtering, which brings the repeat back, and the remote buttons they
+         answered (app_keys and so on) stop working. A theme can set "key_filter": false. -->
+    <bool name="key_filter">true</bool>
+
+    <!-- A package whose screens HomeKeyService sends straight back to this launcher, for a remote button the firmware
+         hard-wires to a stock home (the Xiaomi Mi button opens PatchWall, com.mitv.tvhome.atv). Works without
+         key_filter; the stock screen can show for a moment first. Based on cleanyourtv's stock_home_redirect.
+         A theme can set "home_redirect_package". Empty: off. -->
+    <string name="home_redirect_package" translatable="false"></string>
+
+    <!-- The Xiaomi Mi button opens the mood deck (DeckActivity). No key filter needed, so held volume keeps repeating:
+         HomeKeyService watches the system log for the firmware's own line about the button. Needs
+         "pm grant cv.sarthakgoel.tvhome android.permission.READ_LOGS" once. A theme can set "mi_key_opens_deck". -->
+    <bool name="mi_key_opens_deck">false</bool>
+
     <!-- Time-of-day backdrop behind everything: a dark gradient that follows the clock, with a warm
          horizon glow around sunrise and sunset. 0 keeps the plain background (the default); 1 to 100
          sets its opacity. Around 60 reads clearly without hiding a wallpaper. Can also be set with

@@ -1,5 +1,7 @@
 package cv.sarthakgoel.tvhome;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +20,15 @@ import java.util.function.ToIntFunction;
  */
 final class RemoteKeys {
     private RemoteKeys() { }
+
+    /** key_filter false: the service stays bound for its window events but no longer sees, or delays, any key. */
+    static void applyKeyFilter(AccessibilityService service, boolean keyFilter) {
+        if (keyFilter) return;
+        AccessibilityServiceInfo info = service.getServiceInfo();
+        if (info == null) return;
+        info.flags &= ~AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
+        service.setServiceInfo(info);
+    }
 
     /** keycode -> package, with key names resolved by Android. */
     static Map<Integer, String> parseAppKeys(String[] entries) {

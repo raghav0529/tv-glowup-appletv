@@ -17,9 +17,13 @@ A fork of [sarthakgoel31/tv-glowup](https://github.com/sarthakgoel31/tv-glowup) 
 - **Festival days show the greeting and the festival artwork only**, with no diya and no petal shower. The top shelf steps aside on those days so the artwork shows in full.
 - **Preview any festival without changing the TV's clock:** set `"festival": "preview:2026-11-08"` in the theme config. See [docs/FESTIVALS.md](docs/FESTIVALS.md).
 
+**Mood deck**
+- **"Don't have time to browse?":** pick a mood, scroll its posters, press OK and the title opens in Netflix, Prime Video or JioHotstar. Titles refresh weekly from TMDB, so it does not stay the same. See [docs/DECK.md](docs/DECK.md).
+
 **Xiaomi Mi TV (MiTV-AXSO0) support**
 - A debloat list built from this TV's own package list: [devices/xiaomi-mitv-axso0-android9/disable.txt](devices/xiaomi-mitv-axso0-android9/disable.txt).
-- **The Mi button opens the new home screen.** It sends keycode 189 to Xiaomi's own handler, which opened PatchWall. Fixed with `app_keys`.
+- **Holding volume works.** Key-filtering services stop a held button repeating on this TV, so the services run without filtering (cleanyourtv's `key_filter`).
+- **The Mi button opens the mood deck** instead of PatchWall, by watching the system log rather than filtering keys.
 - **Boots to the new home** instead of PatchWall.
 - **Windows (Git Bash) fixes** for the scripts.
 

@@ -96,4 +96,14 @@
     </plurals>
     <!-- The greeting, then greeting_name: "Good morning, Mr. Trịnh". -->
     <string name="greeting_with_name">%1$s, %2$s</string>
+    <string name="deck_title" translatable="false">Don\'t have time to browse?</string>
+    <string name="deck_empty" translatable="false">Finding titles. Try again in a few minutes.</string>
+    <string name="deck_nope" translatable="false">\u2039 nope</string>
+    <string name="deck_yes" translatable="false">yes \u203A</string>
+    <string name="deck_browse_hint" translatable="false">Left and Right to browse  \u00B7  OK opens  \u00B7  Back to moods</string>
+    <string name="deck_credit" translatable="false">Uses the TMDB API but is not endorsed or certified by TMDB. Where to watch: JustWatch.</string>
+    <plurals name="deck_titles" translatable="false">
+        <item quantity="one">%d title</item>
+        <item quantity="other">%d titles</item>
+    </plurals>
 </resources>

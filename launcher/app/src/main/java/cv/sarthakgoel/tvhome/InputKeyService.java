@@ -30,6 +30,7 @@ public class InputKeyService extends AccessibilityService {
         Config config = Config.load(this);
         inputKeycodes = config.inputKeycodes;
         appKeys = RemoteKeys.parseAppKeys(config.appKeys);
+        RemoteKeys.applyKeyFilter(this, config.keyFilter);
     }
 
     private boolean isInputKey(int keyCode) {

@@ -40,7 +40,15 @@ adb -s $TV shell settings put secure accessibility_enabled 1
 ```
 Check with `adb shell dumpsys accessibility | grep label=`. You should see "Home button" and "TV Glowup Home". **Any reinstall or force-stop of the launcher unbinds them, so run these again after one.**
 
-**Mi button opens the new home.** The theme already maps it (`"app_keys": ["189:cv.sarthakgoel.tvhome"]`). Mi remotes send keycode 189 (`KEYCODE_BUTTON_2`), which Xiaomi's partnercustomizer catches to open PatchWall. If your remote differs, find the code with `adb shell getevent -lt` plus `adb logcat | grep GlobalKey` while pressing the button.
+**Holding volume, and why key filtering is off.** On this TV, any accessibility service that filters keys stops a held button repeating, so volume moves one step per press. The volume key never even reaches the service, so it cannot repeat the key itself. Turn filtering off in `themes/india/config.json`:
+```json
+"key_filter": false
+```
+This is cleanyourtv's `key_filter`. Without it, `app_keys` does nothing.
+
+**The Mi button.** It sends keycode 189, which Xiaomi's partnercustomizer catches to open PatchWall. Two ways to deal with it without key filtering:
+- **Open the mood deck (recommended):** disable PatchWall (`pm disable-user --user 0 com.mitv.tvhome.atv`), set `"mi_key_opens_deck": true` and run `pm grant cv.sarthakgoel.tvhome android.permission.READ_LOGS`. The launcher watches the system log for the firmware's line about the button. No flicker, and it costs about 2.5 MB. A firmware update could change that line. The round button stays Home. Xiaomi TV+ kept working on my TV with PatchWall disabled, so check yours.
+- **Jump back to Home:** `"home_redirect_package": "com.mitv.tvhome.atv"` keeps PatchWall enabled and sends you straight back. It flickers, and repeated presses can leave you stuck on PatchWall, so I do not recommend it.
 
 **Boot to the new home, not PatchWall:**
 ```bash

@@ -1,11 +1,17 @@
 package cv.sarthakgoel.tvhome;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Map;
 
@@ -26,6 +32,13 @@ public class HomeKeyService extends AccessibilityService {
     private boolean settingsPanel;
     /** app_keys, the same map InputKeyService reads, for setups that run only this service. */
     private Map<Integer, String> appKeys = Collections.emptyMap();
+    /** home_redirect_package: its screens come straight back here. Empty: off. */
+    private String homeRedirectPackage = "";
+    /** mi_key_opens_deck: the logcat process and its reader, while they run. */
+    private Process miLog;
+    private Thread miThread;
+    private long miOpenedAt;
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onServiceConnected() {
@@ -36,6 +49,63 @@ public class HomeKeyService extends AccessibilityService {
         settingsKeycodes = config.settingsKeycodes;
         settingsPanel = config.settingsKeyPanel;
         appKeys = RemoteKeys.parseAppKeys(config.appKeys);
+        homeRedirectPackage = config.homeRedirectPackage;
+        RemoteKeys.applyKeyFilter(this, config.keyFilter);
+        if (config.miKeyOpensDeck && miThread == null) startMiWatch();
+    }
+
+    /**
+     * The Mi button never reaches a service that does not filter keys, and filtering costs held volume its repeat. The
+     * firmware's own receiver logs each press ("receiving KeyEvent.KEYCODE_BUTTON_2"), so read just that tag: logd does
+     * the filtering and this thread sleeps until a press. If the line ever changes, the button just does nothing.
+     */
+    private void startMiWatch() {
+        miThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    miLog = new ProcessBuilder("logcat", "-T", "1", "-v", "brief", "-s", "GlobalKey:V")
+                            .redirectErrorStream(true).start();
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(miLog.getInputStream()))) {
+                        for (String line; (line = in.readLine()) != null; ) {
+                            if (line.contains("receiving KeyEvent.KEYCODE_BUTTON_2")) handler.post(this::openDeck);
+                        }
+                    }
+                } catch (IOException ignored) {
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        }, "mi-key-log");
+        miThread.setPriority(Thread.MIN_PRIORITY);
+        miThread.start();
+    }
+
+    private void openDeck() {
+        long now = android.os.SystemClock.elapsedRealtime();
+        if (now - miOpenedAt < 1000) return;
+        miOpenedAt = now;
+        try {
+            startActivity(new Intent(this, DeckActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        } catch (ActivityNotFoundException ignored) {
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (miThread != null) miThread.interrupt();
+        if (miLog != null) miLog.destroy();
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+    private void openHome() {
+        startActivity(new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .setPackage(getPackageName())
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED));
     }
 
     private boolean isSettingsKey(KeyEvent event) {
@@ -63,17 +133,16 @@ public class HomeKeyService extends AccessibilityService {
         }
         if (event.getKeyCode() != KeyEvent.KEYCODE_ALL_APPS) return false;
         if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
-            Intent home = new Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_HOME)
-                    .setPackage(getPackageName())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            startActivity(home);
+            openHome();
         }
         return true;
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return;
+        CharSequence pkg = event.getPackageName();
+        if (!homeRedirectPackage.isEmpty() && pkg != null && homeRedirectPackage.contentEquals(pkg)) openHome();
     }
 
     @Override
