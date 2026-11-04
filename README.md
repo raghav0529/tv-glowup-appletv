@@ -55,7 +55,10 @@ The gains on this TV are smaller than upstream's OnePlus numbers. This Mi TV alr
 
 - **[Sarthak Goel](https://github.com/sarthakgoel31), [tv-glowup](https://github.com/sarthakgoel31/tv-glowup):** nearly everything here. That includes the debloat and restore scripts, the launcher, the festival calendar, live weather, the photo screensaver and the remote-key services. This fork changes a few hundred lines of a launcher that is about ten thousand.
 - **[Gathin](https://github.com/Gathin23), [cleanyourtv](https://github.com/Gathin23/cleanyourtv):** the launcher tv-glowup is built on, and the cinematic top shelf code ported here. Its MiTV-AXSO0 notes were also a reference for the debloat list.
-- **Raghav Goel ([raghav0529](https://github.com/raghav0529)):** the Apple TV layout direction and design decisions, Mi TV AXSO0 support, the festival-date fix and preview switch, and testing everything on a real TV. Built with AI coding tools (Claude Code).
+- **[Hustawek](https://github.com/Hustawek), [remote-control-tv](https://github.com/Hustawek/remote-control-tv):** showed that JustWatch has Android TV links and that a running Netflix ignores them.
+- **The guide to the "I hacked my TV using Claude" reel:** the idea and look of the mood deck.
+- **[TMDB](https://www.themoviedb.org):** titles, posters and backdrops. This product uses the TMDB API but is not endorsed or certified by TMDB. Where-to-watch data: **JustWatch**.
+- **Raghav Goel ([raghav0529](https://github.com/raghav0529)):** the Apple TV layout direction and design decisions, Mi TV AXSO0 support, the festival-date fix and preview switch, the mood deck and the Mi button log watcher, and testing everything on a real TV. Built with AI coding tools (Claude Code).
 
 MIT licensed, like both projects it builds on. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
