@@ -20,6 +20,12 @@ A fork of [sarthakgoel31/tv-glowup](https://github.com/sarthakgoel31/tv-glowup) 
 **Mood deck**
 - **"Don't have time to browse?":** pick a mood, scroll its posters, press OK and the title opens in Netflix, Prime Video or JioHotstar. Titles refresh weekly from TMDB, so it does not stay the same. See [docs/DECK.md](docs/DECK.md).
 
+| Pick a mood | Scroll its titles, press OK |
+|---|---|
+| ![The mood deck: a mood card with skip and open options](docs/appletv/deck-moods.png) | ![A mood opened as a row of posters with the focused title and app below](docs/appletv/deck-list.png) |
+
+*Screenshots from the TV. Posters and backgrounds are blurred here because they belong to their studios; on the TV they are sharp.*
+
 **Xiaomi Mi TV (MiTV-AXSO0) support**
 - A debloat list built from this TV's own package list: [devices/xiaomi-mitv-axso0-android9/disable.txt](devices/xiaomi-mitv-axso0-android9/disable.txt).
 - **Holding volume works.** Key-filtering services stop a held button repeating on this TV, so the services run without filtering (cleanyourtv's `key_filter`).
